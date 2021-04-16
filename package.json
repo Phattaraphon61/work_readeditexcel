@@ -1,15 +1,26 @@
 {
   "name": "readeditexcel",
   "version": "0.1.0",
-  "private": true,
+  "description": "",
+  "keywords": [],
+  "main": "index.html",
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "ant-design-pro": "^2.3.2",
+    "antd": "3.20.1",
+    "js-export-excel": "^1.1.4",
     "nw-react-scripts": "4.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-excel-renderer": "1.1.0",
+    "react-router-dom": "^5.2.0",
     "web-vitals": "^0.2.4"
+  },
+  "devDependencies": {
+    "typescript": "3.3.3"
   },
   "scripts": {
     "start": "nw-react-scripts start",
@@ -27,6 +38,7 @@
     "production": [
       ">0.2%",
       "not dead",
+      "not ie <= 11",
       "not op_mini all"
     ],
     "development": [
@@ -35,7 +47,6 @@
       "last 1 safari version"
     ]
   },
-  "main": "index.html",
   "nwBuilder": {
     "//": "https://github.com/nwjs-community/nw-builder",
     "platforms": [
@@ -47,6 +58,16 @@
     "flavor": "normal",
     "buildDir": "./build",
     "cacheDir": "./cache",
-    "macIcns": "./src/logo.icns"
+    "icon": "./assets/icon.png",
+    "always-on-top": true,
+    "macIcns": "./assets/icon.png"
+  },
+  "window": {
+    "title": "ระบบตรวจสอบอุปกรณ์ทางการแพทย์",
+    "icon": "./src/logo.icns",
+    "toolbar": false,
+    "position": "center",
+    "width": 1280,
+    "height": 720
   }
 }

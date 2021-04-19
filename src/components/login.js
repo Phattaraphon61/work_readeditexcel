@@ -19,34 +19,36 @@ export default class login extends Component {
             password1: '',
             cols: [],
             rows: [],
+            save: true,
             name: null,
             errorMessage: null,
             columns: [
                 {
                     title: "ICD-10",
                     dataIndex: "ICD_10",
-                    editable: true,
-                    render: text => text
+                    // editable: true,
+                    render: text => this.icd_10.includes(text) ? text : <Text type="danger">{text}</Text>
                 },
                 {
                     title: "ICD-9",
                     dataIndex: "ICD_9",
-                    editable: true
+                    // editable: true
+                    render: textg => this.icd_9.includes(textg) ? textg : <Text type="danger">{textg}</Text>
                 },
                 {
                     title: "รหัสกรมบัญชีกลาง.",
                     dataIndex: "g1",
-                    editable: true
+                    // editable: true
                 },
                 {
                     title: "อุปกรณ์",
                     dataIndex: "g2",
-                    editable: true
+                    // editable: true
                 },
                 {
                     title: "อัตราจ่าย",
                     dataIndex: "g3",
-                    editable: true
+                    // editable: true
                 },
                 // {
                 //   title: "Action",
@@ -72,6 +74,18 @@ export default class login extends Component {
         this.handleChange2 = this.handleChange2.bind(this);
         this.handleSubmit1 = this.handleSubmit1.bind(this);
         this.router = undefined;
+
+
+        this.icd_10 = ['Z461', 'H901', 'H902', 'H904', 'H905', 'H907', 'H908',
+            'H910', 'H911', 'H912', 'H913', 'H918', 'H919', 'S684 , V5259',
+            'S489 , V3049', 'S489 , V2349', 'S881 , W1499', 'S881 , W1399',
+            'S789 , V3359', 'M201', 'M202', 'M203', 'M204', 'M205', 'M206', 'M207',
+            'M208', 'M209', 'M215', 'M216', 'H250 , H546', 'H259 , H544', 'H259 , H544',
+            'H252 , H546', 'S980 , V2349', 'M160', 'M161', 'M162', 'M163', 'M164', 'M165',
+            'M166', 'M167'];
+
+        this.icd_9 = [9548, 2099, 8442, 8441, 8415, 8446, 8445, 1371, 1372, 8447,
+            '8151 , 8445', '8161 , 8445'];
     }
     handleChange1(event) {
         this.setState({ user: event.target.value });
@@ -81,7 +95,7 @@ export default class login extends Component {
     }
 
     handleSubmit1() {
-        if (this.state.user == 'admin' && this.state.password == "1234") {
+        if (this.state.user == 'admin' && this.state.password == "2107") {
             this.setState({ user1: this.state.user });
             this.setState({ password1: this.state.password })
             //    window.history.pushState('', '', './home'); 
@@ -97,7 +111,7 @@ export default class login extends Component {
 
 
     error = () => {
-        message.error('ข้อมูลยังไม่ครบ');
+        message.error('ข้อมูลผิดผลาด');
     };
 
     handleSave = row => {
@@ -159,6 +173,7 @@ export default class login extends Component {
     }
 
     fileHandler = fileList => {
+        this.setState({ save: true })
         // console.log("fileList", fileList);
         this.setState({ name: fileList.name.split(".")[0] });
         let fileObj = fileList;
@@ -209,34 +224,32 @@ export default class login extends Component {
                 };
                 resp.rows.slice(1).map((row, index) => {
                     if (row && row !== "undefined") {
-                        if (row.includes(undefined) == true) {
 
-                            newRows.push({
-                                key: index,
-                                // ICD_10: <Text type="danger">{row[0]}</Text>,
-                                // ICD_9: <Text type="danger">{row[1]}</Text>,
-                                // g1: <Text type="danger">{row[2]}</Text>,
-                                // g2: <Text type="danger">{row[3]}</Text>,
-                                // g3: <Text type="danger">{dict[row[2]]}</Text>
-                                // g3: dict[row[3]]
-                                ICD_10: row[0],
-                                ICD_9: row[1],
-                                g1: row[2],
-                                g2: row[3],
-                                g3: undefined
-                            });
+                        if (row[0] !== undefined) {
+                            if (!this.icd_10.includes(row[0])) {
+                                this.setState({ save: false })
+                            }
                         }
-                        if (row.includes(undefined) == false) {
+                        if (row[1] !== undefined) {
+                            if (!this.icd_9.includes(row[1])) {
+                                this.setState({ save: false })
+                            }
+                        }
+                        newRows.push({
+                            key: index,
+                            // ICD_10: <Text type="danger">{row[0]}</Text>,
+                            // ICD_9: <Text type="danger">{row[1]}</Text>,
+                            // g1: <Text type="danger">{row[2]}</Text>,
+                            // g2: <Text type="danger">{row[3]}</Text>,
+                            // g3: <Text type="danger">{dict[row[2]]}</Text>
+                            // g3: dict[row[3]]
+                            ICD_10: row[0],
+                            ICD_9: row[1],
+                            g1: row[2],
+                            g2: row[3],
+                            g3: dict[row[2]]
+                        });
 
-                            newRows.push({
-                                key: index,
-                                ICD_10: row[0],
-                                ICD_9: row[1],
-                                g1: row[2],
-                                g2: row[3],
-                                g3: dict[row[2]]
-                            });
-                        }
                     }
                 });
                 if (newRows.length === 0) {
@@ -298,10 +311,18 @@ export default class login extends Component {
             }
         ];
 
-        if (!datas.includes(undefined) && datas.length !== 0) {
+        // if (!datas.includes(undefined) && datas.length !== 0) {
+        //     var toExcel = new ExportJsonExcel(option);
+        //     toExcel.saveExcel();
+        // } else {
+        //     this.error()
+        // }
+
+        if (this.state.save) {
             var toExcel = new ExportJsonExcel(option);
             toExcel.saveExcel();
         } else {
+            console.log(this.state.save)
             this.error()
         }
 
@@ -319,10 +340,10 @@ export default class login extends Component {
     };
 
     logout = () => {
-        this.setState({password1:""})
-        this.setState({user1:""})
-        this.setState({password:""})
-        this.setState({user:""})
+        this.setState({ password1: "" })
+        this.setState({ user1: "" })
+        this.setState({ password: "" })
+        this.setState({ user: "" })
     }
     handleAdd = () => {
         const { count, rows } = this.state;
@@ -363,7 +384,7 @@ export default class login extends Component {
         });
         return (
 
-            this.state.user1 == 'admin' && this.state.password1 == "1234" ? <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
+            this.state.user1 == 'admin' && this.state.password1 == "2107" ? <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
                 <div style={{ textAlign: 'end' }}>
                     <Button
                         onClick={this.logout}
@@ -445,7 +466,7 @@ export default class login extends Component {
                         bordered
                         pagination={false}
                         components={components}
-                        rowClassName={() => "editable-row"}
+                        // rowClassName={() => "editable-row"}
                         dataSource={this.state.rows}
                         columns={columns}
                     />

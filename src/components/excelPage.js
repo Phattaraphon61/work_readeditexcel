@@ -16,28 +16,27 @@ export default class ExcelPage extends Component {
         {
           title: "ICD-10",
           dataIndex: "ICD_10",
-          editable: true,
-          render: text => text
+          // render: text => text
         },
         {
           title: "ICD-9",
           dataIndex: "ICD_9",
-          editable: true
+
         },
         {
           title: "รหัสกรมบัญชีกลาง.",
           dataIndex: "g1",
-          editable: true
+
         },
         {
           title: "อุปกรณ์",
           dataIndex: "g2",
-          editable: true
+
         },
         {
           title: "อัตราจ่าย",
           dataIndex: "g3",
-          editable: true
+
         },
         // {
         //   title: "Action",
@@ -300,12 +299,12 @@ export default class ExcelPage extends Component {
   };
 
   render() {
-    const components = {
-      body: {
-        row: EditableFormRow,
-        cell: EditableCell
-      }
-    };
+    // const components = {
+    //   body: {
+    //     row: EditableFormRow,
+    //     cell: EditableCell
+    //   }
+    // };
     const columns = this.state.columns.map(col => {
       if (!col.editable) {
         return col;
@@ -360,7 +359,7 @@ export default class ExcelPage extends Component {
             {this.state.rows.length > 0 && (
               <>
                 <Button type="primary" shape="round" size='large'
-                onClick={this.handleSubmit}
+                  onClick={this.handleSubmit}
                 >
                   <Icon type="download" />
           ส่งออกไฟล์ Excel
@@ -400,14 +399,15 @@ export default class ExcelPage extends Component {
                 </Button>
         </div> */}
         <div style={{ marginTop: 20 }}>
-          <Table
+          {/* <Table
             bordered
-            pagination={false}
-            components={components}
-            rowClassName={() => "editable-row"}
+            // pagination={false}
+            // components={components}
+            // rowClassName={() => "editable-row"}
             dataSource={this.state.rows}
-            columns={columns}
-          />
+            // columns={columns}
+          /> */}
+          {/* <Table columns={columns} dataSource={this.state.rows} /> */}
         </div>
       </div>
     );

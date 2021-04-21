@@ -6,6 +6,7 @@ import ExcelPage from "./excelPage";
 import { ExcelRenderer } from "react-excel-renderer";
 import { EditableFormRow, EditableCell } from "../utils/editable";
 import ExportJsonExcel from 'js-export-excel';
+import swal from 'sweetalert';
 
 const { Text } = Typography;
 export default class login extends Component {
@@ -19,8 +20,10 @@ export default class login extends Component {
             password1: '',
             cols: [],
             rows: [],
+            show: false,
             save: true,
             name: null,
+            checkerror: false,
             errorMessage: null,
             columns: [
                 {
@@ -70,19 +73,43 @@ export default class login extends Component {
             ]
         };
 
+        this.checktext = ''
         this.handleChange1 = this.handleChange1.bind(this);
         this.handleChange2 = this.handleChange2.bind(this);
         this.handleSubmit1 = this.handleSubmit1.bind(this);
         this.router = undefined;
 
+        this.itemmm = {
+            '2505': "เครื่องช่วยฟังแบบกล่อง",
+            '2507': 'เครื่องช่วยฟังแบบทัดหลังใบหู',
+            '2508': 'เครื่องช่วยฟังแบบใส่ในช่องหู',
+            '8101': 'แขนเทียมต่ำกว่าระดับศอกส่วนปลายชนิดห้านิ้ว',
+            '8105': 'แขนเทียมเหนือศอกส่วนปลายชนิดตะขอโลหะข้อศอกล็อกได้ด้วยมือ',
+            '8106': 'แขนเทียมชิดไหล่หรือแนบไหล่ส่วนปลายชนิดห้านิ้วไม่มีระบบใช้งานข้อศอกล็อกได้ด้วยมือ',
+            '8202': 'ขาเทียมระดับใต้เข่าแกนนอก',
+            '8203': 'ขาเทียมระดับใต้เข่าแกนใน',
+            '8206': 'ขาเทียมระดับเหนือเข่าแกนใน',
+            '8801': 'รองเท้าคนพิการขนาดเล็ก ชนิดตัดเฉพาะราย',
+            '8802': 'รองเท้าคนพิการขนาดกลาง ชนิดตัดเฉพาะราย',
+            '8803': 'รองเท้าคนพิการขนาดใหญ่ชนิดตัดเฉพาะราย',
+            '8804': 'รองเท้าคนพิการขนาดใหญ่พิเศษ ชนิดตัดเฉพาะราย',
+            '2006': 'เลนส์แก้วตาเทียม ชนิดพับได้ (foldable intraocular lens)',
+            '2007': 'เลนส์แก้วตาเทียม ชนิดแข็งพับไม่ได้ (unfoldable intraocular lens)',
+            '8201': 'ขาเทียมระดับข้อเท้า',
+            '8221': 'เบ้าขาเทียมระดับสะโพก',
+            '8205': 'ขาเทียมระดับเหนือเข่าแกนนอก',
+        }
 
-        this.icd_10 = ['Z461', 'H901', 'H902', 'H904', 'H905', 'H907', 'H908',
+        this.icd_10 = ['H901', 'H902', 'H904', 'H905', 'H907', 'H908',
             'H910', 'H911', 'H912', 'H913', 'H918', 'H919', 'S684 , V5259',
             'S489 , V3049', 'S489 , V2349', 'S881 , W1499', 'S881 , W1399',
-            'S789 , V3359', 'M201', 'M202', 'M203', 'M204', 'M205', 'M206', 'M207',
-            'M208', 'M209', 'M215', 'M216', 'H250 , H546', 'H259 , H544', 'H259 , H544',
+            'S789 , V3359', 'H250 , H546', 'H259 , H544', 'H259 , H544',
             'H252 , H546', 'S980 , V2349', 'M160', 'M161', 'M162', 'M163', 'M164', 'M165',
-            'M166', 'M167'];
+            'M166', 'M167', 'Z461', 'M201', 'M202', 'M203', 'M204', 'M205', 'M206', 'M207',
+            'M208', 'M209', 'M215', 'M216'];
+
+        this.check = ['Z461', 'M201', 'M202', 'M203', 'M204', 'M205', 'M206', 'M207',
+            'M208', 'M209', 'M215', 'M216']
 
         this.icd_9 = [9548, 2099, 8442, 8441, 8415, 8446, 8445, 1371, 1372, 8447,
             '8151 , 8445', '8161 , 8445'];
@@ -174,6 +201,8 @@ export default class login extends Component {
 
     fileHandler = fileList => {
         this.setState({ save: true })
+        this.setState({checkerror: false})
+        this.checktext = ''
         // console.log("fileList", fileList);
         this.setState({ name: fileList.name.split(".")[0] });
         let fileObj = fileList;
@@ -235,6 +264,14 @@ export default class login extends Component {
                                 this.setState({ save: false })
                             }
                         }
+
+                        if (this.check.includes(row[0]) && row[1] !== undefined) {
+                            this.checktext += row[0]+" "
+                            this.setState({checkerror: true})
+                            console.log("ddddddddddddddddd")
+
+
+                        }
                         newRows.push({
                             key: index,
                             // ICD_10: <Text type="danger">{row[0]}</Text>,
@@ -246,7 +283,7 @@ export default class login extends Component {
                             ICD_10: row[0],
                             ICD_9: row[1],
                             g1: row[2],
-                            g2: row[3],
+                            g2: this.itemmm[row[2]],
                             g3: dict[row[2]]
                         });
 
@@ -318,12 +355,13 @@ export default class login extends Component {
         //     this.error()
         // }
 
-        if (this.state.save) {
+        if (this.state.save && this.state.checkerror === false) {
             var toExcel = new ExportJsonExcel(option);
             toExcel.saveExcel();
         } else {
-            console.log(this.state.save)
-            this.error()
+            // this.setState({show:true})
+            swal("ข้อมูลไม่ถูกต้อง", this.checktext , "error");
+            // this.error()
         }
 
         // this.state.rows.map((row) => {
@@ -344,6 +382,7 @@ export default class login extends Component {
         this.setState({ user1: "" })
         this.setState({ password: "" })
         this.setState({ user: "" })
+        this.setState({ rows: '' })
     }
     handleAdd = () => {
         const { count, rows } = this.state;
@@ -384,55 +423,58 @@ export default class login extends Component {
         });
         return (
 
-            this.state.user1 == 'admin' && this.state.password1 == "2107" ? <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
-                <div style={{ textAlign: 'end' }}>
-                    <Button
-                        onClick={this.logout}
-                        size="large"
-                        type="danger"
-                    // style={{ marginBottom: 16, marginLeft: 10 }}
-                    >
-                        ออกจากระบบ
-                      <Icon type="arrow-right" />
-                    </Button>
-                </div>
-                <Row gutter={24}>
-                    <Col
-                        span={8}
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "2%"
-                        }}
-                    >
-                        <Upload
-                            name="file"
-                            beforeUpload={this.fileHandler}
-                            onRemove={() => this.setState({ rows: [] })}
-                            multiple={false}
-                        >
-                            <Button>
-                                <Icon type="upload" /> นำเข้าไฟล์ Excel
-                </Button>
-                        </Upload>
+            <div>
 
-                    </Col>
-                    <Col span={8}>
-                        {this.state.rows.length > 0 && (
-                            <>
-                                <Button type="primary" shape="round" size='large'
-                                    onClick={this.handleSubmit}
-                                >
-                                    <Icon type="download" />
+
+                {this.state.user1 == 'admin' && this.state.password1 == "2107" ? <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
+                    <div style={{ textAlign: 'end' }}>
+                        <Button
+                            onClick={this.logout}
+                            size="large"
+                            type="danger"
+                        // style={{ marginBottom: 16, marginLeft: 10 }}
+                        >
+                            ออกจากระบบ
+                      <Icon type="arrow-right" />
+                        </Button>
+                    </div>
+                    <Row gutter={24}>
+                        <Col
+                            span={8}
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: "2%"
+                            }}
+                        >
+                            <Upload
+                                name="file"
+                                beforeUpload={this.fileHandler}
+                                onRemove={() => this.setState({ rows: [] })}
+                                multiple={false}
+                            >
+                                <Button>
+                                    <Icon type="upload" /> นำเข้าไฟล์ Excel
+                </Button>
+                            </Upload>
+
+                        </Col>
+                        <Col span={8}>
+                            {this.state.rows.length > 0 && (
+                                <>
+                                    <Button type="primary" shape="round" size='large'
+                                        onClick={this.handleSubmit}
+                                    >
+                                        <Icon type="download" />
               ส่งออกไฟล์ Excel
             </Button>
-                            </>
-                        )}
-                    </Col>
+                                </>
+                            )}
+                        </Col>
 
-                </Row>
-                {/* <div>
+                    </Row>
+                    {/* <div>
               <Upload
                 name="file"
                 beforeUpload={this.fileHandler}
@@ -461,68 +503,69 @@ export default class login extends Component {
                 ออกจากระบบ
                     </Button>
             </div> */}
-                <div style={{ marginTop: 20 }}>
-                    <Table
-                        bordered
-                        pagination={false}
-                        components={components}
-                        // rowClassName={() => "editable-row"}
-                        dataSource={this.state.rows}
-                        columns={columns}
-                    />
-                </div>
-            </div> :
-                <div>
-                    <Row type="flex" justify="center" align="middle" style={{ paddingTop: "15%" }} >
-                        <h1>เข้าสู่ระบบ</h1>
-                    </Row>
-                    <Row type="flex" justify="center" align="middle" >
+                    <div style={{ marginTop: 20 }}>
+                        <Table
+                            bordered
+                            pagination={false}
+                            components={components}
+                            // rowClassName={() => "editable-row"}
+                            dataSource={this.state.rows}
+                            columns={columns}
+                        />
+                    </div>
+                </div> :
+                    <div>
+                        <Row type="flex" justify="center" align="middle" style={{ paddingTop: "15%" }} >
+                            <h1>เข้าสู่ระบบ</h1>
+                        </Row>
+                        <Row type="flex" justify="center" align="middle" >
 
-                        <Form
-                            name="normal_login"
-                            className="login-form"
-                        >
-                            <Form.Item
-                                name="username"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your Username!',
-                                    },
-                                ]}
+                            <Form
+                                name="normal_login"
+                                className="login-form"
                             >
-                                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="ชื่อผู้ใช้" value={this.state.user} onChange={this.handleChange1} />
-                            </Form.Item>
-                            <Form.Item
-                                name="password"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your Password!',
-                                    },
-                                ]}
-                            >
-                                {/* <Input
+                                <Form.Item
+                                    name="username"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please input your Username!',
+                                        },
+                                    ]}
+                                >
+                                    <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="ชื่อผู้ใช้" value={this.state.user} onChange={this.handleChange1} />
+                                </Form.Item>
+                                <Form.Item
+                                    name="password"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please input your Password!',
+                                        },
+                                    ]}
+                                >
+                                    {/* <Input
                                 prefix={<LockOutlined className="site-form-item-icon" />}
                                 type="password"
                                 placeholder="Password"
                             /> */}
 
-                                <Input.Password
-                                    prefix={<LockOutlined className="site-form-item-icon" />}
-                                    value={this.state.password} onChange={this.handleChange2}
-                                    placeholder="รหัสผ่าน"
-                                />
-                            </Form.Item>
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handleSubmit1}>
-                                    ยืนยัน
+                                    <Input.Password
+                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                        value={this.state.password} onChange={this.handleChange2}
+                                        placeholder="รหัสผ่าน"
+                                    />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handleSubmit1}>
+                                        ยืนยัน
         </Button>
-                            </Form.Item>
-                        </Form>
-                    </Row>
+                                </Form.Item>
+                            </Form>
+                        </Row>
 
-                </div>
+                    </div>}
+            </div>
         )
     }
 }
